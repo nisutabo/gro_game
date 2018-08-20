@@ -376,7 +376,7 @@ export default class GroBar extends Component {
                     :
                     <div><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
                     }
-                    <div className='target-display'> Target: 5.5 pH </div>
+                    <div className='target-display'> Target: 4.0 mg </div>
                   </div>
                   <div className='column column-4'>
                     <button onClick={this.pesticidecheck}>Add Pesticide</button>
