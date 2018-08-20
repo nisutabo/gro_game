@@ -22,8 +22,7 @@ export default class GroBar extends Component {
     plantHeight: 0,
     plantHealth: 100,
     plantAlive: true,
-    pests: false,
-    benchmarksPassed: 0
+    pests: false
   }
 
 
