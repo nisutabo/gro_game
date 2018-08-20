@@ -372,11 +372,11 @@ export default class GroBar extends Component {
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
                     Pesticide Level: {this.state.progress >= 100 && this.state.pestcideCheckPointAdds === 1 && this.state.pesticideLevel === 4 ?
-                    <div className='optimal'><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
-                    :
-                    <div><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
-                    }
-                    <div className='target-display'> Target: 4.0 mg </div>
+                                      <div className='optimal'><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
+                                      :
+                                      <div><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
+                                      }
+                                      <div className='target-display'> Target: 4.0 mg </div>
                   </div>
                   <div className='column column-4'>
                     <button onClick={this.pesticidecheck}>Add Pesticide</button>
