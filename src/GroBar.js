@@ -4,26 +4,27 @@ import './index.css';
 
 export default class GroBar extends Component {
 
-  state = {
-    started: false,
-    waterAdds: 0,
-    waterCheckPoint1Adds: 0,
-    waterCheckPoint2Adds: 0,
-    waterCheckPoint3Adds: 0,
-    waterCheckPoint4Adds: 0,
-    progress: 1,
-    ECLevel: 0,
-    pHLevel: 7,
-    pHCheckPointAdds:0,
-    pesticideLevel: 0,
-    pestcideCheckPointAdds: 0,
-    DLILevel: 0,
-    lightCheckPointAdds: 0,
-    plantHeight: 0,
-    plantHealth: 100,
-    plantAlive: true,
-    pests: false
-  }
+
+    state = {
+      started: false,
+      waterAdds: 0,
+      waterCheckPoint1Adds: 0,
+      waterCheckPoint2Adds: 0,
+      waterCheckPoint3Adds: 0,
+      waterCheckPoint4Adds: 0,
+      progress: 1,
+      ECLevel: 0,
+      pHLevel: 7,
+      pHCheckPointAdds:0,
+      pesticideLevel: 0,
+      pestcideCheckPointAdds: 0,
+      DLILevel: 0,
+      lightCheckPointAdds: 0,
+      plantHeight: 0,
+      plantHealth: 100,
+      plantAlive: true,
+      pests: false
+    }
 
 
     grow = () => {
@@ -36,7 +37,7 @@ export default class GroBar extends Component {
 
     progress = () => {
       let elem = document.getElementById("myBar");
-      if (this.state.progress <= 100){
+      if (this.state.progress <= 100 && this.state.plantAlive){
         this.setState({
             progress: this.state.progress + 1
           })
@@ -73,11 +74,65 @@ export default class GroBar extends Component {
             }
         }
       }
+
+      if (this.state.progress === 100 && this.props.stage === 'Germination'){
+        this.props.gamecheck('Propagation')
+
+
+        this.setState({
+          //started: false,
+          waterAdds: 0,
+          waterCheckPoint1Adds: 0,
+          waterCheckPoint2Adds: 0,
+          waterCheckPoint3Adds: 0,
+          waterCheckPoint4Adds: 0,
+          progress: 1,
+          ECLevel: 0, //record
+          pHLevel: 7, //record
+          pHCheckPointAdds:0,
+          pesticideLevel: 0, //record
+          pestcideCheckPointAdds: 0,
+          DLILevel: 0, //record
+          lightCheckPointAdds: 0,
+        //  plantHeight: 0,
+        //  plantHealth: 100,
+          plantAlive: true,
+          pests: false
+        })
+
+      } else if (this.state.progress === 100 && this.props.stage === 'Propagation'){
+        this.props.gamecheck('Production')
+
+        this.setState({
+        //  started: false,
+          waterAdds: 0,
+          waterCheckPoint1Adds: 0,
+          waterCheckPoint2Adds: 0,
+          waterCheckPoint3Adds: 0,
+          waterCheckPoint4Adds: 0,
+          progress: 1,
+          ECLevel: 0,
+          pHLevel: 7,
+          pHCheckPointAdds:0,
+          pesticideLevel: 0,
+          pestcideCheckPointAdds: 0,
+          DLILevel: 0,
+          lightCheckPointAdds: 0,
+        //  plantHeight: 0,
+        //  plantHealth: 100,
+          plantAlive: true,
+          pests: false
+        })
+      } else if (this.state.progress === 100 & this.props.stage === 'Production'){
+        this.props.gamecheck('Ready For Harvest')
+      }
+
+
     }
 
     watercheck = () => {
       if (this.state.started && this.state.progress < 100){ //the game is still on
-        if (this.state.ECLevel < 10 && this.state.plantHeight < 100 && this.state.plantHealth > 1){ // to ensure ec level never exceeds 10, plant height never exceeds 100 and plant health is never less than 1
+        if (this.state.ECLevel < 10 && this.state.plantHealth > 1){ // to ensure ec level never exceeds 10, plant height never exceeds 100 and plant health is never less than 1
           if ((this.state.progress >= 0 &&  this.state.progress <= 10) || (this.state.progress >= 30 &&  this.state.progress <= 40) || (this.state.progress >= 60 &&  this.state.progress <= 70) || (this.state.progress >= 90 &&  this.state.progress <= 100)) { // if the player adds water at the appropriate checkpoints
             if (this.state.progress >= 0 && this.state.progress <= 10){ // if player correctly adds water at the first water checkpoint
               if (this.state.waterCheckPoint1Adds === 0){ // if this was the players first add
@@ -271,9 +326,27 @@ export default class GroBar extends Component {
       window.location.reload()
     }
 
+    seeded = () => {
+      if (this.state.started){
+        return (
+          <div className='unit-display optimal'> Yes </div>
+        )
+      } else {
+        return (
+          <div className='unit-display'> No </div>
+        )
+      }
+    }
+
+    // {this.state.started ?
+    //         <div className='unit-display optimal'> Yes </div>
+    //         :
+    //         <div className='unit-display'> No </div>
+    //         }
+
 
   render() {
-    console.log(this.state)
+
     return (
       <div>
       <div className='game-header'>
@@ -330,12 +403,9 @@ export default class GroBar extends Component {
           <br></br>
             <div id="buttons">
                 <div className='row'>
+                <p> {this.props.stage} </p>
                   <div className='column column-8 controlPanel'>
-                    Seeded: {this.state.started ?
-                            <div className='unit-display optimal'> Yes </div>
-                            :
-                            <div className='unit-display'> No </div>
-                            }
+                    Seeded: {this.seeded()}
                   </div>
                   <div className='column column-4'>
                     <button onClick={this.grow}>Start!</button>
