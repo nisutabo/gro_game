@@ -126,8 +126,36 @@ export default class GroBar extends Component {
       } else if (this.state.progress === 100 & this.props.stage === 'Production'){
         this.props.gamecheck('Ready For Harvest')
       }
+    }
 
 
+    waterCheckPointAdder = (checkpoint) => {
+      const attributes = {
+        waterAdds: this.state.waterAdds + 1,
+        ECLevel: this.state.ECLevel + 0.625,
+        plantHeight: this.state.plantHeight + 10
+      }
+      attributes[checkpoint] = this.state[checkpoint] + 1
+      this.setState(
+        attributes
+      )
+      if (this.state.plantHealth < 90){
+        this.setState({
+          plantHealth: this.state.plantHealth + 10
+        })
+      }
+    }
+
+    waterCheckPointOverdose = (checkpoint) => {
+      const attributes = {
+        waterAdds: this.state.waterAdds + 1,
+        ECLevel: this.state.ECLevel + 0.625,
+        plantHealth: this.state.plantHealth - 1
+      }
+      attributes[checkpoint] = this.state[checkpoint] + 1
+      this.setState(
+        attributes
+      )
     }
 
     watercheck = () => {
@@ -136,70 +164,30 @@ export default class GroBar extends Component {
           if ((this.state.progress >= 0 &&  this.state.progress <= 10) || (this.state.progress >= 30 &&  this.state.progress <= 40) || (this.state.progress >= 60 &&  this.state.progress <= 70) || (this.state.progress >= 90 &&  this.state.progress <= 100)) { // if the player adds water at the appropriate checkpoints
             if (this.state.progress >= 0 && this.state.progress <= 10){ // if player correctly adds water at the first water checkpoint
               if (this.state.waterCheckPoint1Adds === 0){ // if this was the players first add
-                this.setState({
-                  waterCheckPoint1Adds: this.state.waterCheckPoint1Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHeight: this.state.plantHeight + 10
-                })
+                this.waterCheckPointAdder('waterCheckPoint1Adds')
               } else { // if the player exceeded the required number of water adds (which is one) within this checkpoint
-                this.setState({
-                  waterCheckPoint1Adds: this.state.waterCheckPoint1Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHealth: this.state.plantHealth - 1
-                })
+                this.waterCheckPointOverdose('waterCheckPoint1Adds')
               }
 
             } else if (this.state.progress >= 30 &&  this.state.progress <= 40) {
               if (this.state.waterCheckPoint2Adds === 0){
-                this.setState({
-                  waterCheckPoint2Adds: this.state.waterCheckPoint2Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHeight: this.state.plantHeight + 10
-                })
+                this.waterCheckPointAdder('waterCheckPoint2Adds')
               } else {
-                this.setState({
-                  waterCheckPoint2Adds: this.state.waterCheckPoint2Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHealth: this.state.plantHealth - 1
-                })
+                this.waterCheckPointOverdose('waterCheckPoint2Adds')
               }
 
             } else if (this.state.progress >= 60 &&  this.state.progress <= 70) {
               if (this.state.waterCheckPoint3Adds === 0){
-                this.setState({
-                  waterCheckPoint3Adds: this.state.waterCheckPoint3Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHeight: this.state.plantHeight + 10
-                })
+                this.waterCheckPointAdder('waterCheckPoint3Adds')
               } else {
-                this.setState({
-                  waterCheckPoint3Adds: this.state.waterCheckPoint3Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHealth: this.state.plantHealth - 1
-                })
+                this.waterCheckPointOverdose('waterCheckPoint3Adds')
               }
 
             } else if (this.state.progress >= 90 &&  this.state.progress <= 100) {
               if (this.state.waterCheckPoint4Adds === 0){
-                this.setState({
-                  waterCheckPoint4Adds: this.state.waterCheckPoint4Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHeight: this.state.plantHeight + 10
-                })
+                this.waterCheckPointAdder('waterCheckPoint4Adds')
               } else {
-                this.setState({
-                  waterCheckPoint4Adds: this.state.waterCheckPoint4Adds + 1,
-                  waterAdds: this.state.waterAdds + 1,
-                  ECLevel: this.state.ECLevel + 0.625,
-                  plantHealth: this.state.plantHealth - 1
-                })
+                this.waterCheckPointOverdose('waterCheckPoint4Adds')
               }
             }
           } else { // if the player did not add water at the appropriate checkpoints
@@ -338,11 +326,37 @@ export default class GroBar extends Component {
       }
     }
 
-    // {this.state.started ?
-    //         <div className='unit-display optimal'> Yes </div>
-    //         :
-    //         <div className='unit-display'> No </div>
-    //         }
+    eclevel = () => {
+      if (this.state.progress >= 100 && this.state.waterAdds === 4 && this.state.waterCheckPoint1Adds === 1 && this.state.waterCheckPoint2Adds === 1 && this.state.waterCheckPoint3Adds === 1 && this.state.waterCheckPoint4Adds === 1 && this.state.ECLevel === 2.5){
+        return (<div className='optimal'><span className='number-display'>{this.state.ECLevel.toFixed(3)}</span><span className='unit-display'> EC </span></div>)
+      } else {
+        return (<div> <span className='number-display'>{this.state.ECLevel.toFixed(3)}</span><span className='unit-display'> EC </span></div>)
+      }
+    }
+
+    phlevel = () => {
+      if (this.state.progress >= 100 && this.state.pHCheckPointAdds === 1 && this.state.pHLevel === 5.5){
+        return (<div className='optimal'><span className='number-display '>{this.state.pHLevel.toFixed(1)}</span><span className='unit-display'> pH</span></div>)
+      } else {
+        return (<div><span className='number-display'>{this.state.pHLevel.toFixed(1)}</span><span className='unit-display'> pH</span></div>)
+      }
+    }
+
+    pesticidelevel = () => {
+      if (this.state.progress >= 100 && this.state.pestcideCheckPointAdds === 1 && this.state.pesticideLevel === 4){
+        return (<div className='optimal'><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>)
+      } else  {
+        return (<div><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>)
+      }
+    }
+
+    dlilevel = () => {
+      if (this.state.progress >= 100 && this.state.lightCheckPointAdds === 1 && this.state.DLILevel === 28){
+        return (<div className='optimal'><span className='number-display'>{this.state.DLILevel.toFixed(1)}</span><span className='unit-display'> mol m<sup>-2</sup> d<sup>-1</sup></span></div>)
+      } else {
+        return (<div><span className='number-display'>{this.state.DLILevel.toFixed(1)}</span><span className='unit-display'> mol m<sup>-2</sup> d<sup>-1</sup> </span></div>)
+      }
+    }
 
 
   render() {
@@ -403,7 +417,8 @@ export default class GroBar extends Component {
           <br></br>
             <div id="buttons">
                 <div className='row'>
-                <p> {this.props.stage} </p>
+                <div> Stage: <div className='unit-display'> {this.props.stage} </div></div>
+                <br></br>
                   <div className='column column-8 controlPanel'>
                     Seeded: {this.seeded()}
                   </div>
@@ -413,11 +428,7 @@ export default class GroBar extends Component {
                 </div>
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
-                    EC Level: {this.state.progress >= 100 && this.state.waterAdds === 4 && this.state.waterCheckPoint1Adds === 1 && this.state.waterCheckPoint2Adds === 1 && this.state.waterCheckPoint3Adds === 1 && this.state.waterCheckPoint4Adds === 1 && this.state.ECLevel === 2.5 ?
-                              <div className='optimal'><span className='number-display'>{this.state.ECLevel.toFixed(3)}</span><span className='unit-display'> EC </span></div>
-                              :
-                              <div> <span className='number-display'>{this.state.ECLevel.toFixed(3)}</span><span className='unit-display'> EC </span></div>
-                              }
+                    EC Level: {this.eclevel()}
                               <div className='target-display'> Target: 2.5 EC </div>
                   </div>
                   <div className='column column-4'>
@@ -426,11 +437,7 @@ export default class GroBar extends Component {
                 </div>
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
-                    pH Level: {this.state.progress >= 100 && this.state.pHCheckPointAdds === 1 && this.state.pHLevel === 5.5 ?
-                              <div className='optimal'><span className='number-display '>{this.state.pHLevel.toFixed(1)}</span><span className='unit-display'> pH</span></div>
-                              :
-                              <div><span className='number-display'>{this.state.pHLevel.toFixed(1)}</span><span className='unit-display'> pH</span></div>
-                              }
+                    pH Level: {this.phlevel()}
                               <div className='target-display'> Target: 5.5 pH </div>
                   </div>
                   <div className='column column-4'>
@@ -440,11 +447,7 @@ export default class GroBar extends Component {
 
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
-                    Pesticide Level: {this.state.progress >= 100 && this.state.pestcideCheckPointAdds === 1 && this.state.pesticideLevel === 4 ?
-                                      <div className='optimal'><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
-                                      :
-                                      <div><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>
-                                      }
+                    Pesticide Level: {this.pesticidelevel()}
                                       <div className='target-display'> Target: 4.0 mg </div>
                   </div>
                   <div className='column column-4'>
@@ -454,11 +457,7 @@ export default class GroBar extends Component {
 
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
-                    DLI Level: {this.state.progress >= 100 && this.state.lightCheckPointAdds === 1 && this.state.DLILevel === 28 ?
-                                <div className='optimal'><span className='number-display'>{this.state.DLILevel.toFixed(1)}</span><span className='unit-display'> mol m<sup>-2</sup> d<sup>-1</sup> </span></div>
-                                :
-                                <div><span className='number-display'>{this.state.DLILevel.toFixed(1)}</span><span className='unit-display'> mol m<sup>-2</sup> d<sup>-1</sup> </span></div>
-                                }
+                    DLI Level: {this.dlilevel()}
                                 <div className='target-display'> Target: 28 mol m<sup>-2</sup> d<sup>-1</sup></div>
                   </div>
                   <div className='column column-4'>
