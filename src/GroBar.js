@@ -4,7 +4,6 @@ import './index.css';
 
 export default class GroBar extends Component {
 
-
     state = {
       started: false,
       waterAdds: 0,
@@ -26,14 +25,12 @@ export default class GroBar extends Component {
       pests: false
     }
 
-
     grow = () => {
       this.setState({
         started: true
       })
       setInterval(this.progress, 100);
     }
-
 
     progress = () => {
       let elem = document.getElementById("myBar");
@@ -65,6 +62,16 @@ export default class GroBar extends Component {
             plantHealth: this.state.plantHealth - 0.3
           })
         }
+        if (this.props.gameData.stage === 'Propagation' && this.props.gameData.germinationWaterAdds < 4){
+          this.setState({
+            plantHealth: this.state.plantHealth - 0.3
+          })
+        }
+        if (this.props.gameData.stage === 'Production' && this.props.gameData.propagationWaterAdds < 8){
+          this.setState({
+            plantHealth: this.state.plantHealth - 0.3
+          })
+        }
         if (this.state.plantHealth < 50){ // if plant health falls below 50% the plant dies
             if(this.state.plantAlive){
               this.setState({
@@ -74,60 +81,38 @@ export default class GroBar extends Component {
             }
         }
       }
-
-      if (this.state.progress === 100 && this.props.stage === 'Germination'){
+      if (this.state.progress === 100 && this.props.gameData.stage === 'Germination'){
+        this.props.germinationAdds()
         this.props.gamecheck('Propagation')
-
-
-        this.setState({
-          //started: false,
-          waterAdds: 0,
-          waterCheckPoint1Adds: 0,
-          waterCheckPoint2Adds: 0,
-          waterCheckPoint3Adds: 0,
-          waterCheckPoint4Adds: 0,
-          progress: 1,
-          ECLevel: 0, //record
-          pHLevel: 7, //record
-          pHCheckPointAdds:0,
-          pesticideLevel: 0, //record
-          pestcideCheckPointAdds: 0,
-          DLILevel: 0, //record
-          lightCheckPointAdds: 0,
-        //  plantHeight: 0,
-        //  plantHealth: 100,
-          plantAlive: true,
-          pests: false
-        })
-
-      } else if (this.state.progress === 100 && this.props.stage === 'Propagation'){
+        this.resetAttributes()
+      } else if (this.state.progress === 100 && this.props.gameData.stage === 'Propagation'){
+        this.props.propagationAdds()
         this.props.gamecheck('Production')
-
-        this.setState({
-        //  started: false,
-          waterAdds: 0,
-          waterCheckPoint1Adds: 0,
-          waterCheckPoint2Adds: 0,
-          waterCheckPoint3Adds: 0,
-          waterCheckPoint4Adds: 0,
-          progress: 1,
-          ECLevel: 0,
-          pHLevel: 7,
-          pHCheckPointAdds:0,
-          pesticideLevel: 0,
-          pestcideCheckPointAdds: 0,
-          DLILevel: 0,
-          lightCheckPointAdds: 0,
-        //  plantHeight: 0,
-        //  plantHealth: 100,
-          plantAlive: true,
-          pests: false
-        })
-      } else if (this.state.progress === 100 & this.props.stage === 'Production'){
+        this.resetAttributes()
+      } else if (this.state.progress === 100 & this.props.gameData.stage === 'Production'){
         this.props.gamecheck('Ready For Harvest')
       }
     }
 
+    resetAttributes = () => {
+      this.setState({
+        waterAdds: 0,
+        waterCheckPoint1Adds: 0,
+        waterCheckPoint2Adds: 0,
+        waterCheckPoint3Adds: 0,
+        waterCheckPoint4Adds: 0,
+        progress: 1,
+        ECLevel: 0,
+        pHLevel: 7,
+        pHCheckPointAdds:0,
+        pesticideLevel: 0,
+        pestcideCheckPointAdds: 0,
+        DLILevel: 0,
+        lightCheckPointAdds: 0,
+        plantAlive: true,
+        pests: false
+      })
+    }
 
     waterCheckPointAdder = (checkpoint) => {
       const attributes = {
@@ -165,6 +150,7 @@ export default class GroBar extends Component {
             if (this.state.progress >= 0 && this.state.progress <= 10){ // if player correctly adds water at the first water checkpoint
               if (this.state.waterCheckPoint1Adds === 0){ // if this was the players first add
                 this.waterCheckPointAdder('waterCheckPoint1Adds')
+                this.props.gameCheckPointUpdate('gameWater1CheckPointAdds')
               } else { // if the player exceeded the required number of water adds (which is one) within this checkpoint
                 this.waterCheckPointOverdose('waterCheckPoint1Adds')
               }
@@ -172,6 +158,7 @@ export default class GroBar extends Component {
             } else if (this.state.progress >= 30 &&  this.state.progress <= 40) {
               if (this.state.waterCheckPoint2Adds === 0){
                 this.waterCheckPointAdder('waterCheckPoint2Adds')
+                this.props.gameCheckPointUpdate('gameWater2CheckPointAdds')
               } else {
                 this.waterCheckPointOverdose('waterCheckPoint2Adds')
               }
@@ -179,6 +166,7 @@ export default class GroBar extends Component {
             } else if (this.state.progress >= 60 &&  this.state.progress <= 70) {
               if (this.state.waterCheckPoint3Adds === 0){
                 this.waterCheckPointAdder('waterCheckPoint3Adds')
+                this.props.gameCheckPointUpdate('gameWater3CheckPointAdds')
               } else {
                 this.waterCheckPointOverdose('waterCheckPoint3Adds')
               }
@@ -186,6 +174,7 @@ export default class GroBar extends Component {
             } else if (this.state.progress >= 90 &&  this.state.progress <= 100) {
               if (this.state.waterCheckPoint4Adds === 0){
                 this.waterCheckPointAdder('waterCheckPoint4Adds')
+                this.props.gameCheckPointUpdate('gameWater4CheckPointAdds')
               } else {
                 this.waterCheckPointOverdose('waterCheckPoint4Adds')
               }
@@ -238,8 +227,6 @@ export default class GroBar extends Component {
       }
     }
 
-
-
     pesticidecheck = () => {
       if (this.state.started && this.state.progress < 100){
         if (this.state.pesticideLevel === 0){ // if first addition of pesticide
@@ -273,8 +260,6 @@ export default class GroBar extends Component {
         }
       }
     }
-
-
 
     dlicheck = () => {
       if (this.state.started && this.state.progress < 100){
@@ -358,9 +343,7 @@ export default class GroBar extends Component {
       }
     }
 
-
   render() {
-
     return (
       <div>
       <div className='game-header'>
@@ -417,7 +400,7 @@ export default class GroBar extends Component {
           <br></br>
             <div id="buttons">
                 <div className='row'>
-                <div> Stage: <div className='unit-display'> {this.props.stage} </div></div>
+                <div> Stage: <div className='stage'> {this.props.gameData.stage} </div></div>
                 <br></br>
                   <div className='column column-8 controlPanel'>
                     Seeded: {this.seeded()}
@@ -444,7 +427,6 @@ export default class GroBar extends Component {
                     <button onClick={this.pHcheck}>Add Acid</button>
                   </div>
                 </div>
-
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
                     Pesticide Level: {this.pesticidelevel()}
@@ -454,7 +436,6 @@ export default class GroBar extends Component {
                     <button onClick={this.pesticidecheck}>Add Pesticide</button>
                   </div>
                 </div>
-
                 <div className='row'>
                   <div className='column column-8 controlPanel'>
                     DLI Level: {this.dlilevel()}
@@ -464,7 +445,6 @@ export default class GroBar extends Component {
                     <button onClick={this.dlicheck}>Add Light</button>
                   </div>
                 </div>
-
             </div>
           </div>
         </div>
