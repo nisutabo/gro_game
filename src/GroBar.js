@@ -26,11 +26,13 @@ export default class GroBar extends Component {
     }
 
     grow = () => {
-      this.setState({
-        started: true
-      })
-      this.props.gamecheck('Germination')
-      setInterval(this.progress, 100);
+      if (!this.state.started){
+        this.setState({
+          started: true
+        })
+        this.props.gamecheck('Germination')
+        setInterval(this.progress, 80);
+      }
     }
 
     progress = () => {
