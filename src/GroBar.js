@@ -136,17 +136,17 @@ export default class GroBar extends Component {
             }
         }
       }
-      if (this.state.progress === 100 && this.props.gameData.stage === 'Germination'){
-        this.props.germinationAdds()
-        this.props.gamecheck('Propagation')
-        this.resetAttributes()
-      } else if (this.state.progress === 100 && this.props.gameData.stage === 'Propagation'){
-        this.props.propagationAdds()
-        this.props.gamecheck('Production')
-        this.resetAttributes()
-      } else if (this.state.progress === 100 & this.props.gameData.stage === 'Production'){
-        this.props.gamecheck('Ready For Harvest')
-      }
+        if (this.state.progress === 100 && this.props.gameData.stage === 'Germination'){
+          this.props.germinationAdds()
+          this.props.gamecheck('Propagation')
+          this.resetAttributes()
+        } else if (this.state.progress === 100 && this.props.gameData.stage === 'Propagation'){
+          this.props.propagationAdds()
+          this.props.gamecheck('Production')
+          this.resetAttributes()
+        } else if (this.state.progress === 100 & this.props.gameData.stage === 'Production'){
+          this.props.gamecheck('Ready For Harvest')
+        }
     }
 
     resetAttributes = () => {
@@ -186,7 +186,7 @@ export default class GroBar extends Component {
       const attributes = {
         waterAdds: this.state.waterAdds + 1,
         ECLevel: 3.5,
-        plantHealth: this.state.plantHealth - 1
+        plantHealth: this.state.plantHealth - 5
       }
       attributes[checkpoint] = this.state[checkpoint] + 1
       this.setState(
@@ -233,9 +233,9 @@ export default class GroBar extends Component {
           } else { // if the player did not add water at the appropriate checkpoints
             this.setState({
               waterAdds: this.state.waterAdds + 1,
-              ECLevel: this.state.ECLevel + 0.625,
+              ECLevel: 2.5,
               plantHeight: this.state.plantHeight + 5,
-              plantHealth: this.state.plantHealth - 0.5
+              plantHealth: this.state.plantHealth - 5
             })
             alert('water added at wrong time')
           }
@@ -306,7 +306,7 @@ export default class GroBar extends Component {
           if (this.state.pesticideLevel < 12 && this.state.plantHealth > 0 && this.state.plantHealth < 100){ //to ensure pesticide never exceeds 12
             this.setState({
               pesticideLevel: 6,
-              plantHealth: this.state.plantHealth - 0.5
+              plantHealth: this.state.plantHealth - 1
             })
             alert('too much pesticide added')
           }
@@ -403,8 +403,6 @@ export default class GroBar extends Component {
     }
 
   render() {
-    console.log(this.props.gameData.propagationLightAdds)
-    const i = "./assets/plant48.jpg"
     return (
       <div>
       <div className='game-header'>
@@ -433,10 +431,7 @@ export default class GroBar extends Component {
                 <div> PLANT HEALTH
                 </div>
                 <div className='number-display status'>
-                {this.state.plantAlive ?
-                this.state.plantHealth.toFixed(2) + ' %'
-                :
-                <span className='dead'>DEAD</span>}
+                {this.state.plantAlive ? this.state.plantHealth.toFixed(2) + ' %' : <span className='dead'>DEAD</span>}
                 </div>
               </div>
             </div>
