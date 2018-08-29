@@ -444,7 +444,7 @@ export default class GroBar extends Component {
                 <div> PEST STATUS
                 </div>
                 <div className='pest-display status'>
-                {this.state.progress >= 100 && this.state.pesticideCheckPointAdds === 1 && !this.state.pests ? <div>Pest Free</div> : <div> At Risk</div>}
+                {this.state.progress >= 100 && this.props.gameData.gamePesticideCheckPointAdds === 3 ? <div>Pest Free</div> : <div> At Risk</div>}
                 </div>
               </div>
             </div>
@@ -502,7 +502,7 @@ export default class GroBar extends Component {
         <div className='row'>
           <div className='instructions'>
             Instructions:
-            Using the buttons above, add the required input when the green progress bar goes over each checkpoint. A perfect game will show a plant health of 100%, plant height of 80cm, a pest free status and all input levels highlighted in green. Note that water contains nutrients, which adjust the EC Level.
+            Using the buttons above, add the required input when the green progress bar goes over each checkpoint. A perfect game will show a plant health of 100%, plant height of 240cm, a pest free status and all input levels highlighted in green. Note that water contains nutrients, which adjust the EC Level.
             <br></br>
             <br></br>
             <button onClick={this.playAgain}>Play Again!</button>
