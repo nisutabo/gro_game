@@ -8,12 +8,18 @@ class App extends Component {
     gameWater2CheckPointAdds: 0,
     gameWater3CheckPointAdds: 0,
     gameWater4CheckPointAdds: 0,
-    germinationWaterAdds: 0,
-    propagationWaterAdds: 0,
     gamepHCheckPointAdds: 0,
     gamePesticideCheckPointAdds: 0,
     gameLightCheckPointAdds: 0,
-    stage: 'Germination'
+    germinationWaterAdds: 0,
+    germinationpHAdds: 0,
+    germinationPesticideAdds: 0,
+    germinationLightAdds: 0,
+    propagationWaterAdds: 0,
+    propagationpHAdds: 0,
+    propagationPesticideAdds: 0,
+    propagationLightAdds: 0,
+    stage: 'Unseeded'
   }
 
   gamecheck = (stage) => {
@@ -33,19 +39,24 @@ class App extends Component {
   germinationAdds = () => {
     let germinationWaterAdditions = this.state.gameWater1CheckPointAdds + this.state.gameWater2CheckPointAdds + this.state.gameWater3CheckPointAdds + this.state.gameWater4CheckPointAdds
     this.setState({
-      germinationWaterAdds: germinationWaterAdditions
+      germinationWaterAdds: germinationWaterAdditions,
+      germinationpHAdds: this.state.gamepHCheckPointAdds,
+      germinationPesticideAdds: this.state.gamePesticideCheckPointAdds,
+      germinationLightAdds: this.state.gameLightCheckPointAdds
     })
   }
 
   propagationAdds = () => {
     let propagationWaterAdditions = this.state.gameWater1CheckPointAdds + this.state.gameWater2CheckPointAdds + this.state.gameWater3CheckPointAdds + this.state.gameWater4CheckPointAdds
     this.setState({
-      propagationWaterAdds: propagationWaterAdditions
+      propagationWaterAdds: propagationWaterAdditions,
+      propagationpHAdds: this.state.gamepHCheckPointAdds,
+      propagationPesticideAdds: this.state.gamePesticideCheckPointAdds,
+      propagationLightAdds: this.state.gameLightCheckPointAdds
     })
   }
 
   render() {
-    console.log(this.state)
     return (
       <div>
         <GroBar

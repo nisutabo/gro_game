@@ -16,7 +16,7 @@ export default class GroBar extends Component {
       pHLevel: 7,
       pHCheckPointAdds:0,
       pesticideLevel: 0,
-      pestcideCheckPointAdds: 0,
+      pesticideCheckPointAdds: 0,
       DLILevel: 0,
       lightCheckPointAdds: 0,
       plantHeight: 0,
@@ -29,6 +29,7 @@ export default class GroBar extends Component {
       this.setState({
         started: true
       })
+      this.props.gamecheck('Germination')
       setInterval(this.progress, 100);
     }
 
@@ -51,7 +52,7 @@ export default class GroBar extends Component {
             })
           }
         }
-        if (this.state.progress > 55 && this.state.pestcideCheckPointAdds < 1){ // if player failed to add pesticide at the appropriate time
+        if (this.state.progress > 55 && this.state.pesticideCheckPointAdds < 1){ // if player failed to add pesticide at the appropriate time
           this.setState({
             pests: true,
             plantHealth: this.state.plantHealth - 0.3
@@ -62,15 +63,67 @@ export default class GroBar extends Component {
             plantHealth: this.state.plantHealth - 0.3
           })
         }
+        if (this.props.gameData.stage === 'Propagation' && (this.props.gameData.germinationWaterAdds < 4 || this.props.gameData.germinationpHAdds < 1 || this.props.gameData.germinationPesticideAdds < 1)){
+          this.setState({
+            plantHealth: this.state.plantHealth - 0.3
+          })
+        }
         if (this.props.gameData.stage === 'Propagation' && this.props.gameData.germinationWaterAdds < 4){
+          this.setState({
+            ECLevel: this.state.ECLevel - 0.005
+          })
+        }
+        if (this.props.gameData.stage === 'Propagation' && this.state.progress > 25 && (this.props.gameData.germinationpHAdds + this.state.pHCheckPointAdds) < 2){
+          if (this.state.pHLevel < 7){
+            this.setState({
+              pHLevel: this.state.pHLevel + 0.005
+            })
+          }
+        }
+        if (this.props.gameData.stage === 'Propagation' && this.state.progress > 55 && (this.props.gameData.germinationPesticideAdds + this.state.pesticideCheckPointAdds) < 2){
+          if (this.state.pesticideLevel > 0){
+            this.setState({
+              pesticideLevel: this.state.pesticideLevel - 0.005
+            })
+          }
+        }
+        if (this.props.gameData.stage === 'Propagation' && this.state.progress > 85 && (this.props.gameData.germinationLightAdds + this.state.lightCheckPointAdds) < 2){
+          if (this.state.DLILevel > 10){
+            this.setState({
+              DLILevel: this.state.DLILevel - 0.05
+            })
+          }
+        }
+        if (this.props.gameData.stage === 'Production' && (this.props.gameData.propagationWaterAdds < 8 || this.props.gameData.propagationpHAdds < 2 || this.props.gameData.propagationPesticideAdds < 2)){
           this.setState({
             plantHealth: this.state.plantHealth - 0.3
           })
         }
         if (this.props.gameData.stage === 'Production' && this.props.gameData.propagationWaterAdds < 8){
           this.setState({
-            plantHealth: this.state.plantHealth - 0.3
+            ECLevel: this.state.ECLevel - 0.005
           })
+        }
+        if ((this.props.gameData.stage === 'Production' && this.props.gameData.propagationpHAdds < 2) || (this.props.gameData.stage === 'Production' && this.state.progress > 25 && (this.props.gameData.propagationpHAdds + this.state.pHCheckPointAdds) < 3)){
+          if (this.state.pHLevel < 7){
+            this.setState({
+              pHLevel: this.state.pHLevel + 0.005
+            })
+          }
+        }
+        if ((this.props.gameData.stage === 'Production' && this.props.gameData.propagationPesticideAdds < 2) || (this.props.gameData.stage === 'Production' && this.state.progress > 55 && (this.props.gameData.propagationPesticideAdds + this.state.pesticideCheckPointAdds) < 3)){
+          if (this.state.pesticideLevel > 0){
+            this.setState({
+              pesticideLevel: this.state.pesticideLevel - 0.005
+            })
+          }
+        }
+        if ((this.props.gameData.stage === 'Production' && this.props.gameData.propagationLightAdds < 2) || (this.props.gameData.stage === 'Production' && this.state.progress > 85 && (this.props.gameData.propagationLightAdds + this.state.lightCheckPointAdds) < 3)){
+          if (this.state.DLILevel > 10){
+            this.setState({
+              DLILevel: this.state.DLILevel - 0.05
+            })
+          }
         }
         if (this.state.plantHealth < 50){ // if plant health falls below 50% the plant dies
             if(this.state.plantAlive){
@@ -102,12 +155,8 @@ export default class GroBar extends Component {
         waterCheckPoint3Adds: 0,
         waterCheckPoint4Adds: 0,
         progress: 1,
-        ECLevel: 0,
-        pHLevel: 7,
         pHCheckPointAdds:0,
-        pesticideLevel: 0,
-        pestcideCheckPointAdds: 0,
-        DLILevel: 0,
+        pesticideCheckPointAdds: 0,
         lightCheckPointAdds: 0,
         plantAlive: true,
         pests: false
@@ -117,7 +166,7 @@ export default class GroBar extends Component {
     waterCheckPointAdder = (checkpoint) => {
       const attributes = {
         waterAdds: this.state.waterAdds + 1,
-        ECLevel: this.state.ECLevel + 0.625,
+        ECLevel: 2.5,
         plantHeight: this.state.plantHeight + 10
       }
       attributes[checkpoint] = this.state[checkpoint] + 1
@@ -134,7 +183,7 @@ export default class GroBar extends Component {
     waterCheckPointOverdose = (checkpoint) => {
       const attributes = {
         waterAdds: this.state.waterAdds + 1,
-        ECLevel: this.state.ECLevel + 0.625,
+        ECLevel: 3.5,
         plantHealth: this.state.plantHealth - 1
       }
       attributes[checkpoint] = this.state[checkpoint] + 1
@@ -194,23 +243,24 @@ export default class GroBar extends Component {
 
     pHcheck = () => {
       if (this.state.started && this.state.progress < 100){
-        if (this.state.pHLevel === 7){ // if first addition of acid
+        if (this.state.pHCheckPointAdds === 0){ // if first addition of acid
 
             if (this.state.progress >= 15 &&  this.state.progress <= 25){ // if acid is added at the appropriate interval/checkpoint
               this.setState({
-                pHLevel: this.state.pHLevel - 1.5,
+                pHLevel: 5.5,
                 pHCheckPointAdds: this.state.pHCheckPointAdds + 1
               })
+              this.props.gameCheckPointUpdate('gamepHCheckPointAdds')
             } else if (this.state.progress < 15 && this.state.pHLevel > 1){
               this.setState({
-                pHLevel: this.state.pHLevel - 1.5,
+                pHLevel: 5.5,
                 plantHealth: this.state.plantHealth - 0.1
               })
              alert('acid added too early')
             }
             else if (this.state.progress > 25 && this.state.pHLevel > 1){
               this.setState({
-                pHLevel: this.state.pHLevel - 1.5,
+                pHLevel: 5.5,
                 plantHealth: this.state.plantHealth + 1
               })
             alert('acid added too late')
@@ -219,7 +269,7 @@ export default class GroBar extends Component {
         } else {
           if (this.state.pHLevel > 1  && this.state.plantHealth > 0 && this.state.plantHealth < 100){ // to ensure pH never goes below 1
             this.setState({
-              pHLevel: this.state.pHLevel - 1.5,
+              pHLevel: 3.0,
               plantHealth: this.state.plantHealth - 1
             })
           }
@@ -229,30 +279,31 @@ export default class GroBar extends Component {
 
     pesticidecheck = () => {
       if (this.state.started && this.state.progress < 100){
-        if (this.state.pesticideLevel === 0){ // if first addition of pesticide
+        if (this.state.pesticideCheckPointAdds === 0){ // if first addition of pesticide
           if (this.state.progress >= 45 &&  this.state.progress <= 55){
             this.setState({
-              pesticideLevel: this.state.pesticideLevel + 4,
-              pestcideCheckPointAdds: this.state.pestcideCheckPointAdds + 1
+              pesticideLevel: 4,
+              pesticideCheckPointAdds: this.state.pesticideCheckPointAdds + 1
             })
+            this.props.gameCheckPointUpdate('gamePesticideCheckPointAdds')
           } else if (this.state.progress < 45){
             this.setState({
-              pesticideLevel: this.state.pesticideLevel + 4,
+              pesticideLevel: 4,
               plantHealth: this.state.plantHealth - 0.5
             })
             alert('pesticide added too early')
           } else if (this.state.progress > 55){
             this.setState({
-              pesticideLevel: this.state.pesticideLevel + 4,
+              pesticideLevel: 4,
               pests: false,
               plantHealth: this.state.plantHealth + 2
             })
             alert('pesticide added too late')
           }
-        } else { // this else clause will activate if number of pestcide additions exceeds what is required (which is one)
+        } else { // this else block will activate if number of pesticide additions exceeds what is required (which is one)
           if (this.state.pesticideLevel < 12 && this.state.plantHealth > 0 && this.state.plantHealth < 100){ //to ensure pesticide never exceeds 12
             this.setState({
-              pesticideLevel: this.state.pesticideLevel + 4,
+              pesticideLevel: 6,
               plantHealth: this.state.plantHealth - 0.5
             })
             alert('too much pesticide added')
@@ -263,30 +314,31 @@ export default class GroBar extends Component {
 
     dlicheck = () => {
       if (this.state.started && this.state.progress < 100){
-        if (this.state.DLILevel === 0){ // if first addition of light
+        if (this.state.lightCheckPointAdds === 0){ // if first addition of light
           if (this.state.progress >= 75 &&  this.state.progress <= 85){
             this.setState({
-              DLILevel: this.state.DLILevel + 28,
+              DLILevel: 28,
               lightCheckPointAdds: this.state.lightCheckPointAdds + 1,
               plantHeight: this.state.plantHeight + 40
             })
+            this.props.gameCheckPointUpdate('gameLightCheckPointAdds')
           } else if (this.state.progress < 75){
             this.setState({
-              DLILevel: this.state.DLILevel + 28,
+              DLILevel: 28,
               plantHeight: this.state.plantHeight + 10
             })
             alert('light added too early')
           } else if (this.state.progress > 85){
             this.setState({
-              DLILevel: this.state.DLILevel + 28,
+              DLILevel: 28,
               plantHeight: this.state.plantHeight + 10
             })
             alert('light added too late')
           }
-        } else { // this else clause will activate if number of additions of light exceeds what is required (which is one)
+        } else { // this else block will activate if number of additions of light exceeds what is required (which is one)
           if (this.state.DLILevel < 40  && this.state.plantHeight < 100){ // to ensure daily light integral (dli) never exceeds 40 and plant height never exceeds 100
             this.setState({
-              DLILevel: this.state.DLILevel + 2,
+              DLILevel: 32,
               plantHeight: this.state.plantHeight + 10
             })
             alert('too much light added')
@@ -328,7 +380,7 @@ export default class GroBar extends Component {
     }
 
     pesticidelevel = () => {
-      if (this.state.progress >= 100 && this.state.pestcideCheckPointAdds === 1 && this.state.pesticideLevel === 4){
+      if (this.state.progress >= 100 && this.state.pesticideCheckPointAdds === 1 && this.state.pesticideLevel === 4){
         return (<div className='optimal'><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>)
       } else  {
         return (<div><span className='number-display'>{this.state.pesticideLevel.toFixed(1)}</span><span className='unit-display'> mg </span></div>)
@@ -344,6 +396,7 @@ export default class GroBar extends Component {
     }
 
   render() {
+    console.log(this.props.gameData.propagationLightAdds)
     return (
       <div>
       <div className='game-header'>
@@ -391,7 +444,7 @@ export default class GroBar extends Component {
                 <div> PEST STATUS
                 </div>
                 <div className='pest-display status'>
-                {this.state.progress >= 100 && this.state.pestcideCheckPointAdds === 1 && !this.state.pests ? <div>Pest Free</div> : <div> At Risk</div>}
+                {this.state.progress >= 100 && this.state.pesticideCheckPointAdds === 1 && !this.state.pests ? <div>Pest Free</div> : <div> At Risk</div>}
                 </div>
               </div>
             </div>
@@ -400,10 +453,8 @@ export default class GroBar extends Component {
           <br></br>
             <div id="buttons">
                 <div className='row'>
-                <div> Stage: <div className='stage'> {this.props.gameData.stage} </div></div>
-                <br></br>
                   <div className='column column-8 controlPanel'>
-                    Seeded: {this.seeded()}
+                    Stage: <div className='stage'> {this.props.gameData.stage} </div>
                   </div>
                   <div className='column column-4'>
                     <button onClick={this.grow}>Start!</button>
