@@ -34,6 +34,11 @@ sub {
   text-align: center;
 }
 
+img {
+  height: 120%;
+  width: 100%;
+}
+
 .instructions {
   font-family: Helvetica-Light;
   font-size: 90%;
@@ -52,8 +57,8 @@ sub {
 }
 
 .pest-display {
-  font-size: 230%;
-  margin-top: 4%;
+  font-size: 200%;
+  margin-top: 5%;
 }
 
 .dead {
@@ -76,6 +81,10 @@ sub {
 
 .number-display{
   font-size: 300%;
+}
+
+.mm-unit {
+  font-size: 75%;
 }
 
 .optimal {

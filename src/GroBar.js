@@ -397,8 +397,14 @@ export default class GroBar extends Component {
       }
     }
 
+    plantimage = () => {
+      let image = (this.state.plantHeight / 10) * 2
+      return require(`./assets/plant${image}.jpg`)
+    }
+
   render() {
     console.log(this.props.gameData.propagationLightAdds)
+    const i = "./assets/plant48.jpg"
     return (
       <div>
       <div className='game-header'>
@@ -407,7 +413,7 @@ export default class GroBar extends Component {
         <div id="myProgress">
           <div id="myBar"></div>
           <div id="checkpoints">
-            <div id="water0-checkpoint" ref='UniqueElementIdentifier'><div>l</div>H<sub>2</sub>O</div>
+            <div id="water0-checkpoint"><div>l</div>H<sub>2</sub>O</div>
             <div id="pH-checkpoint"><div>l</div>Acid</div>
             <div id="water1-checkpoint"><div>l</div>H<sub>2</sub>O</div>
             <div id="pesticide-checkpoint"><div>l</div>Pesticide</div>
@@ -439,7 +445,7 @@ export default class GroBar extends Component {
                 <div> PLANT HEIGHT
                 </div>
                 <div className='number-display status'>
-                {this.state.plantHeight + ' cm'}
+                {this.state.plantHeight}<span className='mm-unit'> mm</span>
                 </div>
               </div>
               <div className='column column-6'>
@@ -447,6 +453,13 @@ export default class GroBar extends Component {
                 </div>
                 <div className='pest-display status'>
                 {this.state.progress >= 100 && this.props.gameData.gamePesticideCheckPointAdds === 3 ? <div>Pest Free</div> : <div> At Risk</div>}
+                </div>
+              </div>
+            </div>
+            <div className='row'>
+              <div className='column column-12'>
+                <div>
+                 <img src={this.plantimage()}/>
                 </div>
               </div>
             </div>
