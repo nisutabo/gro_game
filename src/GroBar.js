@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import './index.css';
-
 export default class GroBar extends Component {
 
     state = {
@@ -510,7 +508,7 @@ export default class GroBar extends Component {
         <div className='row'>
           <div className='instructions'>
             Instructions:
-            Using the buttons above, add the required input when the green progress bar goes over each checkpoint. A perfect game will show a plant health of 100%, plant height of 240cm, a pest free status and all input levels highlighted in green. Note that water contains nutrients, which adjust the EC Level.
+            Using the buttons above, add the required input when the green progress bar goes over each checkpoint. A perfect game will show a plant health of 100%, plant height of 240mm, a pest free status and all input levels highlighted in green. Note that water contains nutrients, which adjust the EC Level.
             <br></br>
             <br></br>
             <button onClick={this.playAgain}>Play Again!</button>
